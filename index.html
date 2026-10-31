@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Tugas Kuliah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+html { background: var(--bg); }
+body { margin: 0; }
+
+/* Layout: satu kolom ala aplikasi mobile, grid kategori 2x2 di atas, daftar pill per kategori di bawah. */
+:root {
+  --bg: #fbfbfd;
+  --fg: #1c2340;
+  --muted: #6b7190;
+  --line: #e7e9f2;
+  --surface: #ffffff;
+  --shadow: 0 6px 18px rgba(40, 50, 100, 0.07);
+
+  --urgent-bg: #fbe3ea;
+  --urgent-ink: #b4325a;
+  --nov-bg: #fcf1c4;
+  --nov-ink: #8a6a05;
+  --week-bg: #dfe4fb;
+  --week-ink: #3f4bb0;
+  --tbd-bg: #dcebe1;
+  --tbd-ink: #2f6a4a;
+
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12141b;
+    --fg: #eceefb;
+    --muted: #9aa0bd;
+    --line: #262a38;
+    --surface: #1b1e2a;
+    --shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    --urgent-bg: #3b2430;
+    --urgent-ink: #f29ab5;
+    --nov-bg: #39331c;
+    --nov-ink: #efd36b;
+    --week-bg: #262b4a;
+    --week-ink: #a9b4f5;
+    --tbd-bg: #223329;
+    --tbd-ink: #8fd0aa;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12141b;
+  --fg: #eceefb;
+  --muted: #9aa0bd;
+  --line: #262a38;
+  --surface: #1b1e2a;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --urgent-bg: #3b2430;
+  --urgent-ink: #f29ab5;
+  --nov-bg: #39331c;
+  --nov-ink: #efd36b;
+  --week-bg: #262b4a;
+  --week-ink: #a9b4f5;
+  --tbd-bg: #223329;
+  --tbd-ink: #8fd0aa;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.45;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font-size: 34px; line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
+.progress { display: flex; flex-direction: column; gap: 8px; }
+.progress-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--muted); font-weight: 500; }
+.progress-top b { color: var(--fg); font-weight: 700; font-variant-numeric: tabular-nums; }
+.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar > span { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--week-ink); transition: width 0.4s ease; }
+
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tile {
+  appearance: none; border: 0; text-align: left; font: inherit; cursor: pointer;
+  border-radius: 24px; padding: 16px; min-width: 0;
+  display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow);
+  transition: transform 0.15s ease;
+}
+.tile:active { transform: scale(0.98); }
+.tile:focus-visible, .pill:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
+.tile .ico { width: 38px; height: 38px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; }
+.tile .ico svg { width: 20px; height: 20px; }
+.tile .count { font-size: 30px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.tile .label { font-size: 13px; font-weight: 600; }
+.tile .sub { font-size: 12px; font-weight: 500; opacity: 0.75; }
+
+.sec-urgent { --c-bg: var(--urgent-bg); --c-ink: var(--urgent-ink); }
+.sec-nov { --c-bg: var(--nov-bg); --c-ink: var(--nov-ink); }
+.sec-week { --c-bg: var(--week-bg); --c-ink: var(--week-ink); }
+.sec-tbd { --c-bg: var(--tbd-bg); --c-ink: var(--tbd-ink); }
+.tile { background: var(--c-bg); color: var(--c-ink); }
+.tile .ico svg { stroke: var(--c-ink); }
+
+section { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.sec-head h2 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.sec-head span { font-size: 12px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+
+.pill {
+  appearance: none; border: 0; font: inherit; color: var(--fg); text-align: left; width: 100%; cursor: pointer;
+  background: var(--c-bg); border-radius: 22px; padding: 14px 14px 14px 14px;
+  display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow); min-width: 0;
+  transition: opacity 0.2s ease;
+}
+.pill .lead { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--surface); color: var(--c-ink);
+  display: grid; place-items: center; font-size: 11px; font-weight: 800; letter-spacing: 0.02em; }
+.pill .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.pill .name { font-size: 15px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.pill .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 12px; font-weight: 500; color: var(--muted); }
+.pill .meta .when { display: inline-flex; align-items: center; gap: 5px; }
+.pill .meta svg { width: 13px; height: 13px; stroke: currentColor; flex: none; }
+.pill .chip { font-weight: 700; color: var(--c-ink); background: var(--surface); border-radius: 999px; padding: 1px 8px; font-variant-numeric: tabular-nums; }
+.pill .check { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--c-ink); display: grid; place-items: center; background: transparent; transition: background 0.2s ease; }
+.pill .check svg { width: 15px; height: 15px; stroke: var(--surface); opacity: 0; transition: opacity 0.2s ease; }
+.pill[aria-pressed="true"] { opacity: 0.55; }
+.pill[aria-pressed="true"] .name { text-decoration: line-through; text-decoration-thickness: 2px; }
+.pill[aria-pressed="true"] .check { background: var(--c-ink); }
+.pill[aria-pressed="true"] .check svg { opacity: 1; }
+
+footer { font-size: 12px; color: var(--muted); text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Update 31 Oktober 2026</div>
+    <h1>Tugas Kuliah</h1>
+    <div class="progress" aria-live="polite">
+      <div class="progress-top"><span><b id="doneNum">0</b> dari <b>16</b> tugas selesai</span><span id="pct">0%</span></div>
+      <div class="bar"><span id="barFill"></span></div>
+    </div>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+  <main id="sections" style="display:flex;flex-direction:column;gap:28px"></main>
+  <footer>Ketuk tugas untuk menandai selesai. Tugas mingguan kembali kosong otomatis pada hari resetnya. Centang tersimpan di perangkat ini.</footer>
+</div>
+
+<script>
+var ICON = {
+  alert: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5"/><path d="M12 17h.01"/><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>',
+  cal: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>',
+  repeat: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg>',
+  help: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.6-2.4 2.1-2.4 3.6"/><path d="M12 17h.01"/></svg>',
+  tick: '<svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+};
+
+var SECTIONS = [
+  { id: "urgent", cls: "sec-urgent", title: "Urgent", sub: "Deadline 1-2 Nov", icon: "alert", tasks: [
+    { n: "SPK DSS: SAW, AHP, WP, TOPSIS", c: "SPK", when: "1-2 Nov", date: "2026-11-01" }
+  ]},
+  { id: "nov", cls: "sec-nov", title: "Deadline November", sub: "Urut dari yang terdekat", icon: "cal", tasks: [
+    { n: "Project Praktikum DMJK", c: "DMJK", when: "± 20 Nov", date: "2026-11-20" },
+    { n: "SIMB Website Landslide", c: "SIMB", when: "20 Nov", date: "2026-11-20" },
+    { n: "Project Praktikum RKPL", c: "RKPL", when: "23 Nov", date: "2026-11-23" }
+  ]},
+  { id: "week", cls: "sec-week", title: "Tugas Mingguan", sub: "Rutin tiap pekan", icon: "repeat", tasks: [
+    { n: "PSTI Weekly Project", c: "PSTI", when: "Minggu malam · reset Senin", dl: 0, reset: 1 },
+    { n: "IMK Weekly Project", c: "IMK", when: "Minggu malam · reset Senin", dl: 0, reset: 1 },
+    { n: "Project MSPD (Survey)", c: "MSPD", when: "Rabu malam · reset Kamis", dl: 3, reset: 4 },
+    { n: "Tugas Praktikum RKPL", c: "RKPL", when: "Selasa · reset Rabu", dl: 2, reset: 3 },
+    { n: "LK KAI", c: "KAI", when: "Minggu · reset Senin", dl: 0, reset: 1 }
+  ]},
+  { id: "tbd", cls: "sec-tbd", title: "Belum Jelas", sub: "Perlu dicek ke dosen", icon: "help", tasks: [
+    { n: "PSTI Business Plan", c: "PSTI", when: "Deadline: ?" },
+    { n: "PSTI Presentasi", c: "PSTI", when: "Deadline: ?" },
+    { n: "IMK Wireframe", c: "IMK", when: "Deadline: ?" },
+    { n: "IMK Prototipe", c: "IMK", when: "Deadline: ?" },
+    { n: "IMK Mock Up", c: "IMK", when: "Deadline: ?" },
+    { n: "Project RKPL", c: "RKPL", when: "Deadline: ?" },
+    { n: "DMJK Live Test", c: "DMJK", when: "Deadline: ?" }
+  ]}
+];
+
+var KEY = "tugas-kuliah-selesai-v2";
+var done = {};
+var TASKS = {};
+try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { done = {}; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} }
+
+/* Hari: 0 = Minggu ... 6 = Sabtu. Reset terjadi pukul 00:00 pada hari reset. */
+function lastReset(resetDow) {
+  var now = new Date();
+  var d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  d.setDate(d.getDate() - ((now.getDay() - resetDow + 7) % 7));
+  return d.getTime();
+}
+function isDone(id) {
+  var v = done[id];
+  if (!v) return false;
+  var t = TASKS[id];
+  if (t && t.reset !== undefined) return v >= lastReset(t.reset);
+  return true;
+}
+function chipFor(t) {
+  if (t.date) return chipText(daysLeft(t.date));
+  if (t.dl !== undefined) return chipText((t.dl - new Date().getDay() + 7) % 7);
+  return "";
+}
+
+function daysLeft(iso) {
+  var p = iso.split("-");
+  var target = new Date(+p[0], +p[1] - 1, +p[2]);
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((target - today) / 86400000);
+}
+function chipText(d) {
+  if (d < 0) return "Lewat";
+  if (d === 0) return "Hari ini";
+  return "H-" + d;
+}
+
+var tiles = document.getElementById("tiles");
+var sections = document.getElementById("sections");
+
+SECTIONS.forEach(function (s) {
+  var tile = document.createElement("button");
+  tile.type = "button";
+  tile.className = "tile " + s.cls;
+  tile.setAttribute("data-go", s.id);
+  tile.innerHTML = '<span class="ico">' + ICON[s.icon] + '</span>' +
+    '<span><span class="count" id="cnt-' + s.id + '">' + s.tasks.length + '</span></span>' +
+    '<span><span class="label">' + s.title + '</span><br><span class="sub">' + s.sub + '</span></span>';
+  tiles.appendChild(tile);
+
+  var sec = document.createElement("section");
+  sec.id = "sec-" + s.id;
+  sec.className = s.cls;
+  sec.innerHTML = '<div class="sec-head"><h2>' + s.title + '</h2><span id="rem-' + s.id + '"></span></div><div class="list"></div>';
+  var list = sec.querySelector(".list");
+
+  s.tasks.forEach(function (t, i) {
+    var id = s.id + "-" + i;
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "pill";
+    b.setAttribute("data-id", id);
+    b.setAttribute("data-sec", s.id);
+    TASKS[id] = t;
+    var chip = (t.date || t.dl !== undefined) ? '<span class="chip" hidden></span>' : "";
+    b.innerHTML = '<span class="lead">' + t.c + '</span>' +
+      '<span class="body"><span class="name">' + t.n + '</span>' +
+      '<span class="meta"><span class="when">' + ICON.cal + t.when + '</span>' + chip + '</span></span>' +
+      '<span class="check">' + ICON.tick + '</span>';
+    list.appendChild(b);
+  });
+  sections.appendChild(sec);
+});
+
+function refresh() {
+  var total = 0, finished = 0;
+  SECTIONS.forEach(function (s) {
+    var left = 0;
+    s.tasks.forEach(function (t, i) {
+      total++;
+      if (isDone(s.id + "-" + i)) finished++; else left++;
+    });
+    document.getElementById("cnt-" + s.id).textContent = left;
+    document.getElementById("rem-" + s.id).textContent = left + " dari " + s.tasks.length + " tersisa";
+  });
+  document.querySelectorAll(".pill").forEach(function (p) {
+    var id = p.getAttribute("data-id");
+    p.setAttribute("aria-pressed", isDone(id) ? "true" : "false");
+    var chip = p.querySelector(".chip");
+    if (chip) { chip.textContent = chipFor(TASKS[id]); chip.hidden = false; }
+  });
+  var pct = Math.round(finished / total * 100);
+  document.getElementById("doneNum").textContent = finished;
+  document.getElementById("pct").textContent = pct + "%";
+  document.getElementById("barFill").style.width = pct + "%";
+}
+
+sections.addEventListener("click", function (e) {
+  var p = e.target.closest(".pill");
+  if (!p) return;
+  var id = p.getAttribute("data-id");
+  if (isDone(id)) delete done[id]; else done[id] = Date.now();
+  save();
+  refresh();
+});
+tiles.addEventListener("click", function (e) {
+  var t = e.target.closest(".tile");
+  if (!t) return;
+  var el = document.getElementById("sec-" + t.getAttribute("data-go"));
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+refresh();
+document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
+setInterval(refresh, 60000);
+</script>
+</body>
+  </html>
