@@ -151,10 +151,10 @@ footer { font-size: 12px; color: var(--muted); text-align: center; }
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">Update 31 Oktober 2026</div>
+    <div class="eyebrow" id="upd">Update 1 November 2026</div>
     <h1>Tugas Kuliah</h1>
     <div class="progress" aria-live="polite">
-      <div class="progress-top"><span><b id="doneNum">0</b> dari <b>16</b> tugas selesai</span><span id="pct">0%</span></div>
+      <div class="progress-top"><span><b id="doneNum">0</b> dari <b id="totalNum">17</b> tugas selesai</span><span id="pct">0%</span></div>
       <div class="bar"><span id="barFill"></span></div>
     </div>
   </header>
@@ -175,13 +175,13 @@ var ICON = {
 
 var SECTIONS = [
   { id: "urgent", cls: "sec-urgent", title: "Urgent", sub: "Deadline 1-2 Nov", icon: "alert", tasks: [
-    { n: "SPK DSS: SAW, AHP, WP, TOPSIS", c: "SPK", when: "2 Nov", date: "2026-11-02" }
+    { n: "SPK DSS: SAW, AHP, WP, TOPSIS", c: "SPK", when: "1-2 Nov", date: "2026-11-01" }
   ]},
   { id: "nov", cls: "sec-nov", title: "Deadline November", sub: "Urut dari yang terdekat", icon: "cal", tasks: [
     { n: "Project Praktikum DMJK", c: "DMJK", when: "± 20 Nov", date: "2026-11-20" },
     { n: "SIMB Website Landslide", c: "SIMB", when: "20 Nov", date: "2026-11-20" },
     { n: "Project Praktikum RKPL", c: "RKPL", when: "23 Nov", date: "2026-11-23" },
-    { n: "Tugas Etika Profesi", c: "ETPROF", when: "5 Nov", date: "2026-11-05" }
+    { n: "Tugas Etika Profesi", c: "ETK", when: "Kamis, 5 Nov", date: "2026-11-05", vanish: true }
   ]},
   { id: "week", cls: "sec-week", title: "Tugas Mingguan", sub: "Rutin tiap pekan", icon: "repeat", tasks: [
     { n: "PSTI Weekly Project", c: "PSTI", when: "Minggu malam · reset Senin", dl: 0, reset: 1 },
@@ -200,6 +200,13 @@ var SECTIONS = [
     { n: "DMJK Live Test", c: "DMJK", when: "Deadline: ?" }
   ]}
 ];
+
+/* Beri id tetap dari urutan awal, buang tugas sekali jalan yang tenggatnya sudah lewat, urutkan deadline November. */
+SECTIONS.forEach(function (s) {
+  s.tasks.forEach(function (t, i) { t.id = s.id + "-" + i; });
+  s.tasks = s.tasks.filter(function (t) { return !(t.vanish && daysLeft(t.date) < 0); });
+  if (s.id === "nov") s.tasks.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+});
 
 var KEY = "tugas-kuliah-selesai-v2";
 var done = {};
@@ -260,7 +267,7 @@ SECTIONS.forEach(function (s) {
   var list = sec.querySelector(".list");
 
   s.tasks.forEach(function (t, i) {
-    var id = s.id + "-" + i;
+    var id = t.id;
     var b = document.createElement("button");
     b.type = "button";
     b.className = "pill";
@@ -283,7 +290,7 @@ function refresh() {
     var left = 0;
     s.tasks.forEach(function (t, i) {
       total++;
-      if (isDone(s.id + "-" + i)) finished++; else left++;
+      if (isDone(t.id)) finished++; else left++;
     });
     document.getElementById("cnt-" + s.id).textContent = left;
     document.getElementById("rem-" + s.id).textContent = left + " dari " + s.tasks.length + " tersisa";
@@ -295,6 +302,7 @@ function refresh() {
     if (chip) { chip.textContent = chipFor(TASKS[id]); chip.hidden = false; }
   });
   var pct = Math.round(finished / total * 100);
+  document.getElementById("totalNum").textContent = total;
   document.getElementById("doneNum").textContent = finished;
   document.getElementById("pct").textContent = pct + "%";
   document.getElementById("barFill").style.width = pct + "%";
@@ -315,9 +323,14 @@ tiles.addEventListener("click", function (e) {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
+(function () {
+  var B = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  var n = new Date();
+  document.getElementById("upd").textContent = "Update " + n.getDate() + " " + B[n.getMonth()] + " " + n.getFullYear();
+})();
 refresh();
 document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
 setInterval(refresh, 60000);
 </script>
 </body>
-  </html>
+</html>
